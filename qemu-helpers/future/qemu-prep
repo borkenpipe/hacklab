@@ -1,0 +1,62 @@
+#!/bin/bash
+
+SCRIPTSRC=`pwd`
+PATCHFILE=$SCRIPTSRC/elfload.c.patch
+: ${MYPYTHON=python}
+PYPATH=`which $MYPYTHON`
+echo "\"$PYPATH\""
+if [ -n "$PYPATH" ] ; then
+    echo "[*] Will use $MYPYTHON during qemu build"
+else
+    echo "[-] ummmm... you told me to use $MYPYTHON for the qemu build but it is not there or in your path"
+    exit 1
+fi
+
+if [[ $# -lt 2 ]] ; then
+    echo "Usage: $0 [UBUNTU|ARCHLINUX] /path/to/qemu_build"
+    exit 1
+fi
+
+DISTRO=$1
+if [ "x$DISTRO" != "xUBUNTU" ] && [ "x$DISTRO" != "xARCHLINUX" ] ; then
+    echo "\"$DISTRO\" is not valid, use:  [UBUNTU|ARCHLINUX]"
+    exit 1
+fi
+
+read -p"[*] Install required packages for your distrou \"$DISTRO\"? [y/n] " yn
+if [ "x$yn" == "xy" ]  || [ "x$yn" == "xY" ] ; then
+    echo "[*] installing packages fro $DISTRO"
+    case $DISTRO in
+        UBUNTU) 
+            sudo  apt-get install autoconf automake libtool zlib1g-dev libglib2.0-dev
+            ;;
+        ARCHLINUX)
+            echo "[-] not supported yet"
+            exit 1
+            ;;
+        *)
+            echo "[-] unhandled distro"
+            exit 1
+            ;;
+        esac
+
+fi
+
+QS=$2
+cd  $QS
+echo -n "[*] no in: " 
+pwd
+patch -p0 < $PATCHFILE
+echo "[*] configure --static time"
+./configure --static --python=$PYPATH || exit 1
+echo "[*] Go download http://people.debian.org/~aurel32/qemu/. In another term do the following (if need be)"
+echo "  wget http://people.debian.org/~aurel32/qemu/mipsel/debian_squeeze_mipsel_standard.qcow2"
+echo "  wget http://people.debian.org/~aurel32/qemu/mipsel/vmlinux-2.6.32-5-4kc-malta vmlinux-2.6.32-5-4kc-malta-mipsel"
+echo "  wget http://people.debian.org/~aurel32/qemu/mips/debian_squeeze_mips_standard.qcow2"
+echo "  wget http://people.debian.org/~aurel32/qemu/mips/vmlinux-2.6.32-5-4kc-malta vmlinux-2.6.32-5-4kc-malta-mips"
+sleep 2
+echo "[*] make time, while build is running- drink beer"
+make || exit 1
+echo "[*] TIme to make install via sudo"
+sudo make install
+

@@ -1,0 +1,17 @@
+export ARCH=mips
+./configure --target=$ARCH-linux --enable-sim-$ARCH --enable-sim-hostendian=little --prefix=/opt/gdb/$ARCH/ --enable-werror=no &&     make && make install
+cd gdb/gdbserver
+export CCDIR=/opt/buildroot/$ARCH/buildroot-2014.08/output/host/usr/bin/
+export CC=$CCDIR/$ARCH-linux-gcc
+./configure CC=$CC LDFLAGS="-static -Os" --host=$ARCH-linux --prefix=/opt/gdb/$ARCH
+make
+export STRIP=$CCDIR/$ARCH-linux-strip
+$STRIP gdbserver 
+file gdbserver 
+make install
+cd ../..
+make distclean
+export PATH=$PATH:$CCDIR
+./configure --host=$ARCH-linux
+make
+cp gdb/gdb /opt/gdb/mips/bin/gdb

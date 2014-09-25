@@ -1,0 +1,103 @@
+#!/bin/bash
+
+. logger-support
+
+usage()
+{
+cat << EOF
+usage: $0 options
+
+OPTIONS:
+   -h      Show this message.
+   -d      Debug messages on, implies verbose.
+   -v      Verbose messages on.
+   -a      Architecture to use.
+   -d      Action to do [install|run]
+   -b      Use the base directory where qemu files/disks are stored.
+   -m      Macaddress to use for qemu VM.
+   -i      Network interface to use.
+EOF
+}
+
+MACADDR="52:54:00:12:34:11"
+INTERFACE="tap0"
+ARCH=""
+ACTION=""
+BASEDIR=""
+while getopts “hdva:r:b:m:i:” OPTION
+do
+    case $OPTION in
+        h)
+            usage
+            exit 1
+            ;;
+        d)
+            DEBUG="yes"
+            VERBOSE="yes"
+            ;;
+        v)
+            VERBOSE="yes"
+            ;;
+        a)
+            ARCH=$OPTARG
+            ;;
+        r)
+            ACTION=$OPTARG
+            ;;
+        b)
+            BASEDIR=$OPTARG
+            ;;
+        m)
+            MACADDR=$OPTARG
+            ;;
+        i)
+            INTERFACE=$OPTARG
+            ;;
+        ?)
+            usage
+            exit
+            ;;
+    esac
+done
+
+debug "Sourcing helper paths"
+
+. qemu-helper-paths
+
+echo $ACTION
+
+if [ -z $ARCH ] ; then fail "no ARCH specified" ; fi
+if [ -z $ACTION ] ; then fail "no ACTION specified i.e., $0 ARCH [install|run]" ; fi
+
+if [ -z $BASEDIR ] ; then info "Using CWD for qemu disk store"; fi
+if [ ! -z $BASEDIR ] ; then cd $BASEDIR || fail "Couldn't change directory to qemu disk store at: \"$BASEDIR\""; fi
+if [ ! -d $ARCH ] ; then fail "Expected architecture directory \"$ARCH\" to exist" ; fi
+cd $ARCH
+
+QEMUBIN=`which qemu-system-$ARCH`
+HARDDISK="debian_mips.qcow2-$ARCH"
+KERNEL="vmlinux-2.6.32-5-4kc-malta-$ARCH"
+INITRD="initrd.gz-$ARCH"
+
+if [ ! -x $QEMUBIN ] ; then fail "no qemu binary $QEMUBIN" ; fi
+if [ ! -r $HARDDISK ] ; then fail "no harddisk: $HARDDISK" ; fi
+if [ ! -r $KERNEL ] ; then fail "no $KERNEL" ; fi
+if [ ! -r $INITRD ] ; then fail "no $INITRD" ; fi
+
+if [[ $ACTION == "install" ]] ; then
+    echo qemu-system-$ARCH -hda $HARDDISK -kernel $KERNEL -initrd $INITRD -append "root=/dev/ram console=ttyS0" -nographic
+    read -p"go?"
+    qemu-system-$ARCH -hda $HARDDISK -kernel $KERNEL -initrd $INITRD -append "root=/dev/ram console=ttyS0" -nographic
+elif [[ $ACTION == "run" ]] ; then
+    qemu-system-$ARCH \
+            -hda $HARDDISK \
+            -kernel $KERNEL \
+            -append "root=/dev/sda1 console=ttyS0" \
+            -nographic \
+            -net nic,macaddr=$MACADDR \
+            -net tap,ifname=$INTERFACE,script=no,downscript=no 
+else
+    usage
+    echo "Give me an action like: $0 -a mipsel -r install"
+fi
+
