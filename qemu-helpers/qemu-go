@@ -12,7 +12,7 @@ OPTIONS:
    -d      Debug messages on, implies verbose.
    -v      Verbose messages on.
    -a      Architecture to use.
-   -d      Action to do [install|run]
+   -r      Action to do [install|run]
    -b      Use the base directory where qemu files/disks are stored.
    -m      Macaddress to use for qemu VM.
    -i      Network interface to use.
@@ -66,12 +66,12 @@ debug "Sourcing helper paths"
 
 echo $ACTION
 
-if [ -z $ARCH ] ; then fail "no ARCH specified" ; fi
-if [ -z $ACTION ] ; then fail "no ACTION specified i.e., $0 ARCH [install|run]" ; fi
+if [ -z $ARCH ] ; then usage ; fail "no ARCH specified" ; fi
+if [ -z $ACTION ] ; then usage ; fail "no ACTION specified i.e., $0 ARCH [install|run]" ; fi
 
 if [ -z $BASEDIR ] ; then info "Using CWD for qemu disk store"; fi
 if [ ! -z $BASEDIR ] ; then cd $BASEDIR || fail "Couldn't change directory to qemu disk store at: \"$BASEDIR\""; fi
-if [ ! -d $ARCH ] ; then fail "Expected architecture directory \"$ARCH\" to exist" ; fi
+if [ ! -d $ARCH ] ; then usage ; fail "Expected architecture directory \"$ARCH\" to exist" ; fi
 cd $ARCH
 
 QEMUBIN=`which qemu-system-$ARCH`
