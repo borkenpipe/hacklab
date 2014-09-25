@@ -5,6 +5,6 @@ if [ -z $BRPREFIX] ; then
 fi
 
 DESTBUILDDIR="$BRPREFIX/buildroot/build"
-DESTGCC="$BRPREFIX/gcc/"
+DESTGCC="$BRPREFIX/gcc"
 DESTGCCARCH="$DESTGCC/$ARCH"
 BUILDROOTSRC="../buildroot"
