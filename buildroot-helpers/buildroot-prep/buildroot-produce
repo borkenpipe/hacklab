@@ -2,6 +2,17 @@
 
 . logger-support
 
+function cleanup
+{
+	echo NOT DOING rm -rf /opt/buildroot/build
+    debug_pause "Let's not clean up just yet"
+
+	if [ "$ARCH" != "" ] && [ -d /opt/gcc/$ARCH ]
+	then
+		ls /opt/gcc/$ARCH/ | grep -v host | xargs -i rm -rf /opt/gcc/$ARCH/{}
+	fi
+}
+
 function isyes
 {
 	ANSWER=$1
