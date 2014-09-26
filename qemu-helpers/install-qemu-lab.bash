@@ -2,7 +2,7 @@
 
 SUDOINSTALL="sudo install -v "
 
-if [ -r logger-support ] ; then source  logger-support ; else echo "I need logger-support. Quitting" ; fi
+if [ -r lib/logger-support ] ; then source  lib/logger-support ; else echo "I need logger-support. Quitting" ; fi
 
 PREFIX="/opt/qemu-hacklab"
 
