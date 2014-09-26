@@ -4,12 +4,13 @@
 
 function cleanup
 {
-	echo NOT DOING rm -rf /opt/buildroot/build
-    debug_pause "Let's not clean up just yet"
+    info "Cleaning up stuff we don't need"
 
-	if [ "$ARCH" != "" ] && [ -d /opt/gcc/$ARCH ]
+	rm -rf $DESTBUILDDIR
+
+	if [ "$ARCH" != "" ] && [ -d $DESTGCCARCH ]
 	then
-		ls /opt/gcc/$ARCH/ | grep -v host | xargs -i rm -rf /opt/gcc/$ARCH/{}
+		ls $DESTGCCARCH | grep -v host | xargs -i rm -rf $DESTGCCARCH/{}
 	fi
 }
 
@@ -191,7 +192,9 @@ then
 fi
 
 debug_pause "Time to do the real work: make BASE_DIR=\"$DESTGCCARCH\""
+
 touch "buildname.$BUILDNAME"
+
 make BASE_DIR="$DESTGCCARCH"
 RET=$?
 cleanup
