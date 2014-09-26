@@ -1,6 +1,8 @@
 #!/bin/bash
 
-. logger-support
+PREFIX="/opt/qemu-hacklab"
+
+source $PREFIX/logger-support
 
 usage()
 {
@@ -62,7 +64,7 @@ done
 
 debug "Sourcing helper paths"
 
-. qemu-helper-paths
+source qemu-helper-paths
 
 echo $ACTION
 

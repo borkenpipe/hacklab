@@ -115,6 +115,8 @@ fi
 
 cd $BUILDROOT || fail "Expected $BUILDROOT to exist"
 
+if [ ! -z $BUILDROOTCONFIG ] ; then cp -v $BUILDROOTCONFIG ".config" ; fi
+
 if [ "x$SKIPCONFIG" == "xno" ] ; then
     echo ""
     echo -n "You are about to build a GCC cross compiler. You will need to configure the following:
@@ -143,7 +145,6 @@ else
     verbose "Skipping menu config"
 fi
 
-if [ ! -z $BUILDROOTCONFIG ] ; then cp -v $BUILDROOTCONFIG ".config" ; fi
 if [ ! -r ".config" ] ; then fail "We don't have a .config to use. Manually provide one or __don't__ use -s option" ; fi
 
 ARCH=$(grep 'BR2_ARCH=' .config | cut -d'"' -f2)
