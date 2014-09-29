@@ -4,4 +4,5 @@ if [ -z $BRPREFIX] ; then
     BRPREFIX="/opt"
 fi
 
-DESTDISKDIR="$BRPREFIX/qemu/disks"
+HLBASEINSTALL="$BRPREFIX/hacklab"
+HLDESTDISKDIR="$HLBASEINSTALL/qemu/disks"
