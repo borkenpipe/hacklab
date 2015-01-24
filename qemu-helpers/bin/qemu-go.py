@@ -22,7 +22,7 @@ finally:
     print("FINALLY")
     sys.path[:] = path # restore
 module.log_it("WA WA")
-LAST HERE, OK WE NEED TO USE THE VAR NAME. THIS IS FUNE FOR NOW
+#LAST HERE, OK WE NEED TO USE THE VAR NAME. THIS IS FUNE FOR NOW
 exit(42)
 
 myconfigfile = LOGGER_MODULE
