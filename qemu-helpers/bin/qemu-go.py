@@ -7,38 +7,15 @@ PREFIX="/opt/qemu-hacklab"
 PREFIXBACKUP="."
 LOGGER_MODULE_FILENAME="loggerSupport"
 LOGGER_MODULE = os.path.join(PREFIX,LOGGER_MODULE_FILENAME)
-print("Get this guy %s" % LOGGER_MODULE)
 
 directory, module_name = os.path.split(LOGGER_MODULE)
 module_name = os.path.splitext(module_name)[0]
-print("Now dealing with %s" % module_name)
-
 path = list(sys.path)
 sys.path.insert(0, directory)
 try:
-    module = __import__(module_name)
-    print("DID IT")
+    logmod = __import__(module_name)
 finally:
-    print("FINALLY")
     sys.path[:] = path # restore
-module.log_it("WA WA")
-#LAST HERE, OK WE NEED TO USE THE VAR NAME. THIS IS FUNE FOR NOW
-exit(42)
-
-myconfigfile = LOGGER_MODULE
-
-try:
-    config = __import__(myconfigfile)
-    for i in config.__dict__:
-        print(i            )
-except ImportError:
-    print("Unable to import configuration file %s" % (myconfigfile,))
-
-#try:
-#import "%s/logger-support.py" % PREFIX
-#except:
-#print("Dang YO!")
-
 
 def usage(msg=""):
     usageText = """
@@ -58,7 +35,13 @@ def usage(msg=""):
     print("%s\n%s" % (usageText, msg))
 
 def main():
-    print("YO DUDE")
+    print("SDF")
+    logmod.info("YO DUDE")
+    logmod.verbose("YO DUDE")
+    logmod.debug("YO DUDE")
+    logmod.debug_pause("YO DUDE")
+    logmod.fail("YO DUDE")
+    logmod.cleanup("DONT DO ME")
 """
 
 if [ -z $HLUSER ] ; then
@@ -187,3 +170,6 @@ else
 fi
 
 """
+
+if __name__ == "__main__":
+    main()
