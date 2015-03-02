@@ -39,6 +39,8 @@ OPTIONS:
    -b      Directory or tar.gz of buildroot.
    -s      Skip menuconfig.
    -y      Don't bother the user and just say yes.
+   -a      Name of the ARCH
+   -p      BRPREFIX unused
    -c      Use this config for buildroot.
 EOF
 }
@@ -89,7 +91,7 @@ do
 done
 
 if [ -z $ARCH ] ; then usage ; fail "no ARCH specified" ; fi
-if [ -z $BUILDROOT ] ; then usage ; fail "Path to buildroot or tar.gz of buildroot" ; fi
+if [ -z $BUILDROOT ] ; then usage ; fail "Path to buildroot or tar.gz of buildroot: \"$BUILDROOT\"" ; fi
 
 . buildroot-paths
 

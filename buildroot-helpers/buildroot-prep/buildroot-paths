@@ -1,7 +1,7 @@
 
 if [ -z $ARCH ] ; then echo "[-] $0 needs to have env \$ARCH set" ; fi
 if [ -z $BRPREFIX] ; then
-    BRPREFIX="/opt"
+    BRPREFIX="/opt/new"
 fi
 
 DESTBUILDDIR="$BRPREFIX/buildroot/build"
