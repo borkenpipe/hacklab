@@ -1,0 +1,10 @@
+
+if [ -z $ARCH ] ; then echo "[-] $0 needs to have env \$ARCH set" ; fi
+if [ -z $BRPREFIX] ; then
+    BRPREFIX="/opt"
+fi
+
+DESTBUILDDIR="$BRPREFIX/buildroot/build"
+DESTGCC="$BRPREFIX/gcc/"
+DESTGCCARCH="$DESTGCC/$ARCH"
+BUILDROOTSRC="../buildroot"
